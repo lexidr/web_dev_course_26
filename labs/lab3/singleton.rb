@@ -10,10 +10,14 @@
 # Hint: Use class variables and private constructor
 
 class Logger
-  # TODO: Make the constructor private using private_class_method
-  # TODO: Create a class variable @@instance
-  # TODO: Implement self.instance method that returns the single instance
-  
+  private_class_method :new
+
+  @@instance = nil
+
+  def self.instance
+    @@instance ||= new
+  end
+
   def initialize
     @logs = []
   end
@@ -37,9 +41,7 @@ end
 
 require 'singleton'
 
-class Configuration
-  # TODO: Include the Singleton module
-  
+class Configuration include Singleton
   attr_accessor :app_name, :version, :debug_mode
   
   def initialize
@@ -60,25 +62,22 @@ end
 # Exercise 3: Implement a Database Connection Pool Singleton
 # Create a DatabaseConnection class that manages a single connection
 
-class DatabaseConnection
-  # TODO: Implement Singleton pattern (manually or with module)
-  # TODO: Add a @connected attribute to track connection state
-  
+class DatabaseConnection include Singleton
   def initialize
+    super
     @connected = false
     @connection_string = nil
   end
   
   def connect(connection_string)
-    # TODO: Set @connected to true and save connection_string
-    # TODO: Return "Connected to #{connection_string}"
-    nil
+    @connected = true
+    @connection_string = connection_string
+    "Connected to #{@connection_string}"
   end
   
   def disconnect
-    # TODO: Set @connected to false
-    # TODO: Return "Disconnected"
-    nil
+    @connected = false
+    "Disconnected"
   end
   
   def connected?
@@ -86,9 +85,11 @@ class DatabaseConnection
   end
   
   def execute_query(query)
-    # TODO: Return "Executing: #{query}" if connected
-    # TODO: Return "Not connected to database" if not connected
-    nil
+    if @connected 
+      "Executing: #{query}"
+    else
+      "Not connected to database"
+    end
   end
 end
 
